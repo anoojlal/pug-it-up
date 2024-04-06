@@ -5,19 +5,48 @@ using UnityEditor;
 
 public class TileGenerator : MonoBehaviour {
 
-    public GameObject tile;
-    public Vector2 size;
+    public GameObject tilePrefab;
+
+    public bool[,] tiles = {
+        {true, true, true, true},
+        {false, true, true, true},
+        {true, true, true, true},
+        {false, true, true, true},
+        {true, false, true, true},
+        {false, false, true, true},
+        {true, true, true, false},
+        {false, true, true, false}
+    };
 
     public void Start() {
-        GenerateBoard();
+        if (ValidateTiles()) {
+            SpawnTiles();
+        }
     }
 
-    public void GenerateBoard() {
-        for (int col = 0; col < size.x; col++) {
-            for (int row = 0; row < size.y; row++) {
-                var newTile = PrefabUtility.InstantiatePrefab(tile) as GameObject;
-                newTile.transform.SetParent(this.transform);
+    public bool ValidateTiles() {
+        // TODO:
+        // - check if rows alternate between true and false
+        // - check if path to end is possible
+
+        return true;
+    }
+
+    public void SpawnTiles() {
+        for (int y = 0; y < tiles.GetLength(0); y++) {
+            float firstTileX = tiles[y, 0] ? -2.25f : -3.75f;
+
+            for (int tile = 1; tile < tiles.GetLength(1); tile++) {
+                if (tiles[y, tile]) {
+                    var newTile = PrefabUtility.InstantiatePrefab(tilePrefab) as GameObject;
+                    newTile.transform.SetParent(this.transform);
+                    float x = firstTileX + (3 * (tile - 1));
+                    newTile.transform.localPosition = new Vector3(x, y, y);
+                }
             }
         }
+
+
+        
     }
 }
