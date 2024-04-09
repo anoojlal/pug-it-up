@@ -7,20 +7,41 @@ public class TileGenerator : MonoBehaviour {
 
     public GameObject tilePrefab;
 
-    public bool[,] tiles = {
-        {true, true, true, true},
-        {false, true, true, true},
-        {true, true, true, true},
-        {false, true, true, true},
-        {true, false, true, true},
-        {false, false, true, true},
-        {true, true, true, false},
-        {false, true, true, false}
-    };
+    Queue<bool[]> tiles;
 
     public void Start() {
+        InitializeTiles();
+
         if (ValidateTiles()) {
             SpawnTiles();
+        }
+    }
+
+    public void InitializeTiles() {
+        tiles = new Queue<bool[]>();
+
+        for (int i = 0; i < 100; i++) {
+            bool[] row_1 = { false, true, false, false };
+            bool[] row_2 = { true, true, false, false };
+            bool[] row_3 = { false, false, true, false };
+            bool[] row_4 = { true, false, true, false };
+            bool[] row_5 = { false, false, false, true };
+            bool[] row_6 = { true, false, false, true };
+            bool[] row_7 = { false, false, false, true };
+            bool[] row_8 = { true, false, true, false };
+            bool[] row_9 = { false, false, true, false };
+            bool[] row_10 = { true, true, false, false };
+
+            tiles.Enqueue(row_1);
+            tiles.Enqueue(row_2);
+            tiles.Enqueue(row_3);
+            tiles.Enqueue(row_4);
+            tiles.Enqueue(row_5);
+            tiles.Enqueue(row_6);
+            tiles.Enqueue(row_7);
+            tiles.Enqueue(row_8);
+            tiles.Enqueue(row_9);
+            tiles.Enqueue(row_10);
         }
     }
 
@@ -33,20 +54,22 @@ public class TileGenerator : MonoBehaviour {
     }
 
     public void SpawnTiles() {
-        for (int y = 0; y < tiles.GetLength(0); y++) {
-            float firstTileX = tiles[y, 0] ? -2.25f : -3.75f;
+        int y = 0;
 
-            for (int tile = 1; tile < tiles.GetLength(1); tile++) {
-                if (tiles[y, tile]) {
+        while (tiles.Count > 0) {
+            bool[] currentRow = tiles.Dequeue();
+            float firstTileX = currentRow[0] ? -2.25f : -3.75f;
+
+            for (int tile = 1; tile < currentRow.Length; tile++) {
+                if (currentRow[tile]) {
                     var newTile = PrefabUtility.InstantiatePrefab(tilePrefab) as GameObject;
                     newTile.transform.SetParent(this.transform);
                     float x = firstTileX + (3 * (tile - 1));
                     newTile.transform.localPosition = new Vector3(x, y, y);
                 }
             }
+
+            y++;
         }
-
-
-        
     }
 }
