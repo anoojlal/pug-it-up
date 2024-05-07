@@ -5,12 +5,12 @@ using System;
 
 public class TileGenerator : MonoBehaviour {
 
-    private int[,] NEXT_LEFT = new int[2, 3] {
+    private static int[,] NEXT_LEFT = new int[2, 3] {
         { -1, 0, 1 },
         { 0, 1, 2 }
     };
 
-    private int[,] NEXT_RIGHT = new int[2, 3] {
+    private static int[,] NEXT_RIGHT = new int[2, 3] {
         { 0, 1, 2 },
         { 1, 2, -1 }
     };
@@ -33,14 +33,15 @@ public class TileGenerator : MonoBehaviour {
         for (int y = 1; y < length; y++) {
             TileRow lastTileRow = level.Last.Value.GetComponent<TileRow>();
             int lastTilePosition = lastTileRow.tiles[0].GetComponent<Tile>().position;
+            int lastTileRowShifted = Convert.ToInt32(lastTileRow.shifted);
             System.Random random = new System.Random();
             bool goLeft = random.Next(2) == 1;
             bool[] positions = { false, false, false };
 
-            if (NEXT_RIGHT[Convert.ToInt32(lastTileRow.shifted), lastTilePosition] == -1 || (NEXT_LEFT[Convert.ToInt32(lastTileRow.shifted), lastTilePosition] != -1 && goLeft)) {
-                positions[NEXT_LEFT[Convert.ToInt32(lastTileRow.shifted), lastTilePosition]] = true;
+            if (NEXT_RIGHT[lastTileRowShifted, lastTilePosition] == -1 || (NEXT_LEFT[lastTileRowShifted, lastTilePosition] != -1 && goLeft)) {
+                positions[NEXT_LEFT[lastTileRowShifted, lastTilePosition]] = true;
             } else {
-                positions[NEXT_RIGHT[Convert.ToInt32(lastTileRow.shifted), lastTilePosition]] = true;
+                positions[NEXT_RIGHT[lastTileRowShifted, lastTilePosition]] = true;
             }
 
             AddTileRow(y, y % 2 == 0, positions);
