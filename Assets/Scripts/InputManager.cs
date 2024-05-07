@@ -10,26 +10,43 @@ public class InputManager : MonoBehaviour {
 
     void Awake() {
         lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.enabled = true;
+        lineRenderer.positionCount = 2;
     }
 
     void Update() {
         if (Input.touchCount > 0) {
-            GetClosestPathPosition(Camera.main.ScreenToWorldPoint(Input.touches[0].position).x);
-
-            lineRenderer.enabled = true;
-            lineRenderer.positionCount = 2;
-            lineRenderer.SetPosition(0, new Vector3(closestPathPosition, 0, 0));
-            lineRenderer.SetPosition(1, new Vector3(closestPathPosition, 20, 0));
+            if (UpdateClosestPathPosition(Camera.main.ScreenToWorldPoint(Input.touches[0].position).x)) {
+                lineRenderer.SetPosition(0, new Vector3(closestPathPosition, 0, 0));
+                lineRenderer.SetPosition(1, new Vector3(closestPathPosition, 20, 0));
+            }
         }
     }
 
-    private void GetClosestPathPosition(float touchPosition) {
-        foreach (float pathPosition in pathPositions) {
-            if (Math.Abs(touchPosition - pathPosition) < 0.75f) {
-                closestPathPosition = pathPosition;
+    private bool UpdateClosestPathPosition(float touchPosition) {
+        float newClosestPathPosition = pathPositions[0];
 
-                break;
+        if (Math.Abs(touchPosition) > 2.25) {
+            newClosestPathPosition = pathPositions[touchPosition < 0 ? 0 : pathPositions.Length - 1];
+        } else {
+            for (int i = 1; i < pathPositions.Length - 1; i++) {
+                float pathPosition = pathPositions[i];
+
+                if (Math.Abs(pathPosition - touchPosition) < 0.75f) {
+                    newClosestPathPosition = pathPosition;
+
+                    break;
+                }
             }
         }
+
+        if (newClosestPathPosition != closestPathPosition) {
+            closestPathPosition = newClosestPathPosition;
+            Debug.Log("Update closestPathPosition");
+
+            return true;
+        }
+
+        return false;
     }
 }
