@@ -3,7 +3,6 @@ using UnityEngine;
 public class Tile : MonoBehaviour {
 
     public int position;
-    public float speed;
 
     Rigidbody2D rb;
 
@@ -12,6 +11,6 @@ public class Tile : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        rb.velocity = new Vector2(0, -speed);
+        rb.velocity = new Vector2(0, 1 / -GameManager.TICK_SPEED);
     }
 }
