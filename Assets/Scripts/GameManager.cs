@@ -1,14 +1,15 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 
-    public static float TICK_SPEED = 0.5f;
+    public static float TICK_FREQUENCY = 0.5f;
 
-    private TileGenerator tileGenerator;
-    private InputManager inputManager;
-    private GameObject player;
+    public static TileGenerator tileGenerator;
+    public static InputManager inputManager;
+    public static GameObject player;
+
     private LinkedListNode<GameObject> currentTileRow;
 
     public void Awake() {
@@ -28,9 +29,7 @@ public class GameManager : MonoBehaviour {
         //        render Player as green, else red
 
         currentTileRow = tileGenerator.level.First;
-        Debug.Log(currentTileRow.Value.name);
-
-        InvokeRepeating("Tick", 0f, TICK_SPEED);
+        InvokeRepeating("Tick", 0f, TICK_FREQUENCY);
     }
 
     public void Update() {
@@ -40,9 +39,31 @@ public class GameManager : MonoBehaviour {
 
     private void Tick() {
         currentTileRow = currentTileRow.Next;
+        StartCoroutine(MovePlayer(inputManager.path < player.transform.position.x));
+    }
 
-        float translation = inputManager.path < player.transform.position.x ? -1.5f : 1.5f;
-        player.transform.position = new Vector3(player.transform.position.x + translation, player.transform.position.y, player.transform.position.z);
-        Debug.Log("player: " + player.transform.position + " currentTileRow: " + currentTileRow.Value.transform.position);
+    IEnumerator MovePlayer(bool left) {
+        float timeElapsed = 0;
+        float duration = TICK_FREQUENCY / 2;
+        float startX = player.transform.position.x;
+        float startY = 0;
+        float endX = left ? startX - 1.5f : startX + 1.5f;
+        float endY = 0.5f;
+
+        player.transform.position = new Vector3(startX, startY, player.transform.position.z);
+        Debug.Log("start: " + player.transform.position);
+        player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+
+        while (timeElapsed < duration) {
+            float t = timeElapsed / duration;
+            player.transform.position = new Vector3(Mathf.Lerp(startX, endX, t), Mathf.Lerp(startY, endY, t), player.transform.position.z);
+            timeElapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        player.transform.position = new Vector3(endX, endY, player.transform.position.z);
+        Debug.Log("end: " + player.transform.position);
+        player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1 / -TICK_FREQUENCY);
     }
 }

@@ -11,6 +11,6 @@ public class Tile : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        rb.velocity = new Vector2(0, 1 / -GameManager.TICK_SPEED);
+        rb.velocity = new Vector2(0, 1 / -GameManager.TICK_FREQUENCY);
     }
 }
