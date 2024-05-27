@@ -10,7 +10,7 @@ public class Tile : MonoBehaviour {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    void FixedUpdate() {
+    void Start() {
         rb.velocity = new Vector2(0, 1 / -GameManager.TICK_FREQUENCY);
     }
 }

@@ -12,7 +12,7 @@ public class InputManager : MonoBehaviour {
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.enabled = true;
         lineRenderer.positionCount = 2;
-        path = PATHS[0];
+        UpdatePath(PATHS[0]);
     }
 
     void Update() {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,7 @@ public class GameManager : MonoBehaviour {
     public static GameObject player;
 
     private LinkedListNode<GameObject> currentTileRow;
+    public int currentPosition;
 
     public void Awake() {
         tileGenerator = GameObject.Find("TileGenerator").GetComponent<TileGenerator>();
@@ -19,39 +21,53 @@ public class GameManager : MonoBehaviour {
     }
 
     public void Start() {
-        // TODO:
-        // InvokeRepeating does this every tick:
-        // 1. Update current TileRow to next in LinkedList
-        // 2. Based on selectedPath and NEXT_LEFT/RIGHT,
-        //    move Player either left or right
-        //      - Movement takes half tick
-        //      - If Player is moving to existing Tile,
-        //        render Player as green, else red
-
         currentTileRow = tileGenerator.level.First;
+        currentPosition = currentTileRow.Value.GetComponent<TileRow>().tiles[0].GetComponent<Tile>().position;
+        bool onTrack = false;
+
+        foreach (GameObject tile in currentTileRow.Value.GetComponent<TileRow>().tiles) {
+            if (tile.GetComponent<Tile>().position == currentPosition) {
+                onTrack = true;
+
+                break;
+            }
+        }
+
+        Debug.Log("currentPosition: " + currentPosition + " onTrack: " + onTrack);
         InvokeRepeating("Tick", 0f, TICK_FREQUENCY);
     }
 
-    public void Update() {
-        // TODO:
-        // 
-    }
-
     private void Tick() {
+        bool goLeft = inputManager.path < player.transform.position.x;
+        int shifted = Convert.ToInt32(currentTileRow.Value.GetComponent<TileRow>().shifted);
+
         currentTileRow = currentTileRow.Next;
-        StartCoroutine(MovePlayer(inputManager.path < player.transform.position.x));
+        Debug.Log("goLeft: " + goLeft + " shifted: " + shifted + " currentPosition: " + currentPosition);
+        currentPosition = goLeft ? TileGenerator.NEXT_LEFT[shifted, currentPosition] : TileGenerator.NEXT_RIGHT[shifted, currentPosition];
+        bool onTrack = false;
+
+        foreach (GameObject tile in currentTileRow.Value.GetComponent<TileRow>().tiles) {
+            if (tile.GetComponent<Tile>().position == currentPosition) {
+                onTrack = true;
+
+                break;
+            }
+        }
+
+        Debug.Log("currentPosition: " + currentPosition + " onTrack: " + onTrack);
+
+        StartCoroutine(MovePlayer(goLeft));
     }
 
-    IEnumerator MovePlayer(bool left) {
+    IEnumerator MovePlayer(bool goLeft) {
         float timeElapsed = 0;
         float duration = TICK_FREQUENCY / 2;
         float startX = player.transform.position.x;
         float startY = 0;
-        float endX = left ? startX - 1.5f : startX + 1.5f;
+        float endX = goLeft ? startX - 1.5f : startX + 1.5f;
         float endY = 0.5f;
 
         player.transform.position = new Vector3(startX, startY, player.transform.position.z);
-        Debug.Log("start: " + player.transform.position);
         player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
 
         while (timeElapsed < duration) {
@@ -63,7 +79,6 @@ public class GameManager : MonoBehaviour {
         }
 
         player.transform.position = new Vector3(endX, endY, player.transform.position.z);
-        Debug.Log("end: " + player.transform.position);
         player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1 / -TICK_FREQUENCY);
     }
 }

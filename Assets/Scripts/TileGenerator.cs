@@ -5,12 +5,12 @@ using System;
 
 public class TileGenerator : MonoBehaviour {
 
-    private static int[,] NEXT_LEFT = new int[2, 3] {
+    public static int[,] NEXT_LEFT = new int[2, 3] {
         { -1, 0, 1 },
         { 0, 1, 2 }
     };
 
-    private static int[,] NEXT_RIGHT = new int[2, 3] {
+    public static int[,] NEXT_RIGHT = new int[2, 3] {
         { 0, 1, 2 },
         { 1, 2, -1 }
     };
