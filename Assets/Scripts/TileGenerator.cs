@@ -2,79 +2,57 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
+using UnityEngine.UIElements;
 
 public class TileGenerator : MonoBehaviour {
 
-    public static int[,] NEXT_LEFT = new int[2, 3] {
-        { -1, 0, 1 },
-        { 0, 1, 2 }
-    };
-
-    public static int[,] NEXT_RIGHT = new int[2, 3] {
-        { 0, 1, 2 },
-        { 1, 2, -1 }
-    };
-
     public GameObject tilePrefab;
-    public LinkedList<GameObject> level;
+
+    // TODO: Keep track of List of bool arrays instead of GameObjects since RenderManager will deal with GameObjects
+    public List<GameObject> level;
 
     public void Awake() {
-        InitiateLevel(500);
+        // TODO:
+        // - Keep track of entire level's tiles in List
+        // - Work with RenderManager to render finite number of tiles
+
+        level = new List<GameObject>();
+        GenerateRandomSingleWidth(1000);
     }
 
-    public void InitiateLevel(int length) {
-        // TODO:
-        // - linked list infinitely full
-        // - renders finite number of rows
+    public void GenerateRandomSingleWidth(int length) {
+        bool[] firstTiles = { false, false, false, false, false, false };
+        int previousTile = 2;
+        firstTiles[previousTile] = true;
+        level.Add(InstantiateTileRow(firstTiles));
 
-        level = new LinkedList<GameObject>();
-        AddTileRow(0, false, new bool[] { false, true, false });
-
-        for (int y = 1; y < length; y++) {
-            TileRow lastTileRow = level.Last.Value.GetComponent<TileRow>();
-            int lastTilePosition = lastTileRow.tiles[0].GetComponent<Tile>().position;
-            int lastTileRowShifted = Convert.ToInt32(lastTileRow.shifted);
+        for (int i = 1; i < length; i++) {
+            bool[] tiles = { false, false, false, false, false, false };
             System.Random random = new System.Random();
             bool goLeft = random.Next(2) == 1;
-            bool[] positions = { false, false, false };
-
-            if (NEXT_RIGHT[lastTileRowShifted, lastTilePosition] == -1 || (NEXT_LEFT[lastTileRowShifted, lastTilePosition] != -1 && goLeft)) {
-                positions[NEXT_LEFT[lastTileRowShifted, lastTilePosition]] = true;
-            } else {
-                positions[NEXT_RIGHT[lastTileRowShifted, lastTilePosition]] = true;
-            }
-
-            AddTileRow(y, y % 2 != 0, positions);
+            previousTile = previousTile == 5 || (goLeft && previousTile != 0) ? previousTile - 1 : previousTile + 1;
+            tiles[previousTile] = true;
+            level.Add(InstantiateTileRow(tiles));
         }
     }
 
-    private void AddTileRow(int y, bool shifted, bool[] positions) {
-        GameObject tileRow = new GameObject("TileRow" + y);
-        float firstTileX = shifted ? -2.25f : -3.75f;
+    public GameObject InstantiateTileRow(bool[] tiles) {
+        // TODO: Let RenderManager do the GameObject stuff
 
-        level.AddLast(tileRow);
-        tileRow.AddComponent<TileRow>();
-        tileRow.GetComponent<TileRow>().shifted = shifted;
+        int index = level.Count;
+
+        GameObject tileRow = new GameObject("TileRow" + index);
         tileRow.transform.SetParent(this.transform);
 
-        for (int position = 0; position < positions.Length; position++) {
-            if (positions[position]) {
-                var tile = PrefabUtility.InstantiatePrefab(tilePrefab) as GameObject;
-                float x = firstTileX + (position * 3);
+        for (int tileIndex = 0; tileIndex <= 5; tileIndex++) {
+            if (tiles[tileIndex]) {
+                GameObject tile = PrefabUtility.InstantiatePrefab(tilePrefab) as GameObject;
 
-                tile.transform.localPosition = new Vector3(x, y, y);
+                tile.transform.localPosition = new Vector3(-3.75f + (tileIndex * 1.5f), index, index);
                 tile.transform.SetParent(tileRow.transform);
-                tile.GetComponent<Tile>().position = position;
-                tileRow.GetComponent<TileRow>().tiles.Add(tile);
             }
         }
-    }
 
-    public bool ValidateLevel() {
-        // TODO:
-        // - check if rows alternate between true and false
-        // - check if path to end is possible
-
-        return true;
+        return tileRow;
     }
 }

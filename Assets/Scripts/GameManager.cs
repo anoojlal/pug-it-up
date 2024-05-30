@@ -23,40 +23,40 @@ public class GameManager : MonoBehaviour {
     }
 
     public void Start() {
-        currentTileRow = tileGenerator.level.First;
-        currentPosition = currentTileRow.Value.GetComponent<TileRow>().tiles[0].GetComponent<Tile>().position;
-        bool onTrack = false;
+        //currentTileRow = tileGenerator.level.First;
+        //currentPosition = currentTileRow.Value.GetComponent<TileRow>().tiles[0].GetComponent<Tile>().position;
+        //bool onTrack = false;
 
-        foreach (GameObject tile in currentTileRow.Value.GetComponent<TileRow>().tiles) {
-            if (tile.GetComponent<Tile>().position == currentPosition) {
-                onTrack = true;
+        //foreach (GameObject tile in currentTileRow.Value.GetComponent<TileRow>().tiles) {
+        //    if (tile.GetComponent<Tile>().position == currentPosition) {
+        //        onTrack = true;
 
-                break;
-            }
-        }
+        //        break;
+        //    }
+        //}
 
-        Debug.Log("currentPosition: " + currentPosition + " onTrack: " + onTrack);
+        //Debug.Log("currentPosition: " + currentPosition + " onTrack: " + onTrack);
         InvokeRepeating("Tick", 0f, TICK_FREQUENCY);
     }
 
     private void Tick() {
         bool goLeft = inputManager.path < player.transform.position.x;
-        int shifted = Convert.ToInt32(currentTileRow.Value.GetComponent<TileRow>().shifted);
+        //int shifted = Convert.ToInt32(currentTileRow.Value.GetComponent<TileRow>().shifted);
 
-        currentTileRow = currentTileRow.Next;
+        //currentTileRow = currentTileRow.Next;
         //Debug.Log("goLeft: " + goLeft + " shifted: " + shifted + " currentPosition: " + currentPosition);
-        currentPosition = goLeft ? TileGenerator.NEXT_LEFT[shifted, currentPosition] : TileGenerator.NEXT_RIGHT[shifted, currentPosition];
-        bool onTrack = false;
+        //currentPosition = goLeft ? TileGenerator.NEXT_LEFT[shifted, currentPosition] : TileGenerator.NEXT_RIGHT[shifted, currentPosition];
+        //bool onTrack = false;
 
-        foreach (GameObject tile in currentTileRow.Value.GetComponent<TileRow>().tiles) {
-            if (tile.GetComponent<Tile>().position == currentPosition) {
-                onTrack = true;
+        //foreach (GameObject tile in currentTileRow.Value.GetComponent<TileRow>().tiles) {
+        //    if (tile.GetComponent<Tile>().position == currentPosition) {
+        //        onTrack = true;
 
-                break;
-            }
-        }
+        //        break;
+        //    }
+        //}
 
-        Debug.Log("currentPosition: " + currentPosition + " onTrack: " + onTrack);
+        //Debug.Log("currentPosition: " + currentPosition + " onTrack: " + onTrack);
 
         StartCoroutine(MovePlayer(goLeft));
     }

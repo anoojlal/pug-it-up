@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class TileRow : MonoBehaviour {
 
-    public bool shifted;
+    // TODO: Delete this script, might be unnecessary
+
     public List<GameObject> tiles;
 
     void Awake() {
