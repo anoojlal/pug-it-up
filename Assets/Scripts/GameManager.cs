@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 
     public static float TICK_FREQUENCY = 0.5f;
+    public static float[] X_POSITIONS = new float[] { -3.75f, -2.25f, -0.75f, 0.75f, 2.25f, 3.75f };
 
     public static TileGenerator tileGenerator;
     public static InputManager inputManager;
@@ -42,7 +44,7 @@ public class GameManager : MonoBehaviour {
         int shifted = Convert.ToInt32(currentTileRow.Value.GetComponent<TileRow>().shifted);
 
         currentTileRow = currentTileRow.Next;
-        Debug.Log("goLeft: " + goLeft + " shifted: " + shifted + " currentPosition: " + currentPosition);
+        //Debug.Log("goLeft: " + goLeft + " shifted: " + shifted + " currentPosition: " + currentPosition);
         currentPosition = goLeft ? TileGenerator.NEXT_LEFT[shifted, currentPosition] : TileGenerator.NEXT_RIGHT[shifted, currentPosition];
         bool onTrack = false;
 
@@ -60,6 +62,8 @@ public class GameManager : MonoBehaviour {
     }
 
     IEnumerator MovePlayer(bool goLeft) {
+        // TODO: correct player x value in case of glitch
+
         float timeElapsed = 0;
         float duration = TICK_FREQUENCY / 2;
         float startX = player.transform.position.x;
@@ -68,6 +72,7 @@ public class GameManager : MonoBehaviour {
         float endY = 0.5f;
 
         player.transform.position = new Vector3(startX, startY, player.transform.position.z);
+        Debug.Log("start: " + player.transform.position);
         player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
 
         while (timeElapsed < duration) {
@@ -79,6 +84,7 @@ public class GameManager : MonoBehaviour {
         }
 
         player.transform.position = new Vector3(endX, endY, player.transform.position.z);
+        Debug.Log("end: " + player.transform.position);
         player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1 / -TICK_FREQUENCY);
     }
 }

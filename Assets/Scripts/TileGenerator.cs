@@ -28,7 +28,7 @@ public class TileGenerator : MonoBehaviour {
         // - renders finite number of rows
 
         level = new LinkedList<GameObject>();
-        AddTileRow(0, true, new bool[] { true, false, false });
+        AddTileRow(0, false, new bool[] { false, true, false });
 
         for (int y = 1; y < length; y++) {
             TileRow lastTileRow = level.Last.Value.GetComponent<TileRow>();
@@ -44,7 +44,7 @@ public class TileGenerator : MonoBehaviour {
                 positions[NEXT_RIGHT[lastTileRowShifted, lastTilePosition]] = true;
             }
 
-            AddTileRow(y, y % 2 == 0, positions);
+            AddTileRow(y, y % 2 != 0, positions);
         }
     }
 

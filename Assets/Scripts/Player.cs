@@ -6,7 +6,7 @@ public class Player : MonoBehaviour {
 
     void Awake() {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        this.transform.position = new Vector3(-2.25f, 0, 0);
+        this.transform.position = new Vector3(-0.75f, 0, -1);
     }
 
     void Update() {
