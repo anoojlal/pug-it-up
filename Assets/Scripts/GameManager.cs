@@ -5,7 +5,7 @@ public class GameManager : MonoBehaviour {
     // TODO:
     // - Refactor everything to be static
 
-    public static float TICK_FREQUENCY = 0.5f;
+    public static float TICK_FREQUENCY = 1f;
 
     public static TileGenerator tileGenerator;
     public static InputManager inputManager;

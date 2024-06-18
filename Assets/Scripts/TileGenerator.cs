@@ -10,7 +10,7 @@ public class TileGenerator : MonoBehaviour {
 
     public void Awake() {
         level = new List<int[]>();
-        GenerateRandomSingleWidth(2, 15);
+        GenerateRandomSingleWidth(2, 10000);
     }
 
     public void GenerateRandomSingleWidth(int startingTile, int length) {

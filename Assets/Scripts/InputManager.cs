@@ -3,6 +3,9 @@ using System;
 
 public class InputManager : MonoBehaviour {
 
+    // TODO:
+    // - Accept mouse input for testing
+
     private static float[] PATHS = new float[] { -3f, -1.5f, 0, 1.5f, 3f };
     private LineRenderer lineRenderer;
 
