@@ -9,7 +9,7 @@ public class InputManager : MonoBehaviour {
     private static float[] PATHS = new float[] { -3f, -1.5f, 0, 1.5f, 3f };
     private LineRenderer lineRenderer;
 
-    public float path;
+    public static float path;
 
     void Awake() {
         lineRenderer = GetComponent<LineRenderer>();

@@ -16,7 +16,7 @@ public class Player : MonoBehaviour {
     }
 
     void Update() {
-        if (transform.position.x < GameManager.inputManager.path) {
+        if (transform.position.x < InputManager.path) {
             spriteRenderer.flipX = true;
         } else {
             spriteRenderer.flipX = false;

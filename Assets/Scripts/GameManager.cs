@@ -7,27 +7,27 @@ public class GameManager : MonoBehaviour {
 
     public static float TICK_FREQUENCY = 1f;
 
-    public static TileGenerator tileGenerator;
-    public static InputManager inputManager;
-    public static RenderManager renderManager;
+    //public static TileGenerator tileGenerator;
+    //public static InputManager inputManager;
+    //public static RenderManager renderManager;
 
-    public static Player player;
-    public int currentPosition;
+    //public static Player player;
+    //public int currentPosition;
 
     public void Awake() {
-        tileGenerator = GameObject.Find("TileGenerator").GetComponent<TileGenerator>();
-        inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
-        renderManager = GameObject.Find("InputManager").GetComponent<RenderManager>();
-        player = GameObject.Find("Player").GetComponent<Player>();
+        //tileGenerator = GameObject.Find("TileGenerator").GetComponent<TileGenerator>();
+        //inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
+        //renderManager = GameObject.Find("InputManager").GetComponent<RenderManager>();
+        //player = GameObject.Find("Player").GetComponent<Player>();
     }
 
     public void Start() {
-        InvokeRepeating("Tick", 0f, TICK_FREQUENCY);
+        //InvokeRepeating("Tick", 0f, TICK_FREQUENCY);
     }
 
-    private void Tick() {
-        bool goLeft = inputManager.path < player.transform.position.x;
+    //private void Tick() {
+    //    bool goLeft = inputManager.path < player.transform.position.x;
 
-        player.MovePlayer(goLeft);
-    }
+    //    player.MovePlayer(goLeft);
+    //}
 }
